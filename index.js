@@ -1,35 +1,31 @@
 const feathers = require('@feathersjs/feathers');
 const express = require('@feathersjs/express');
 const socketio = require('@feathersjs/socketio');
-
-const mongoose = require('mongoose');
+const logger = require('feathers-logger');
+const morgan = require('morgan');
 const cors = require('cors');
-
-mongoose.Promise = global.Promise;
-
-// Connect to your MongoDB instance(s)
-mongoose.connect('mongodb://localhost:27017/todo-list');
-
-// Create an Express compatible Feathers application instance.
+const config = require('./config/config');
+const db = require('./integrations/mongodb');
 const app = express(feathers());
-app.use(cors());
 
-// Turn on JSON parser for REST services
+db.connect();
+
+app.use(cors());
 app.use(express.json());
-// Turn on URL-encoded parser for REST services
 app.use(express.urlencoded({ extended: true }));
-// Enable REST services
 app.configure(express.rest());
 // app.use(express.notFound({ verbose: true }));
 // app.use(express.errorHandler());
-// Enable Socket.io services
+app.configure(logger(morgan('tiny')));
 app.configure(socketio());
-// Connect to the db, create and register a Feathers service.
+app.hooks({
+  error: async context => {
+    console.error(`Error in '${context.path}' service method '${context.method}'`, context.error.stack);
+  }
+});
 
-require('./modules/tasks/tasks.route')(app);
+require('./modules/tasks/tasks.routes')(app);
 
-// Start the server.
-const port = 5001;
-app.listen(port, () => {
-  console.log(`Feathers server listening on port ${port}`);
+app.listen(config.PORT, () => {
+  console.log(`Feathers server listening on port ${config.PORT}`);
 });
