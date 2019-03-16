@@ -18,8 +18,14 @@
         <ul class="list-group">
           {{#endpoints}}
           <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-            {{path}}
-            <span class="badge badge-primary badge-pill">{{method}}</span>
+            <div>
+              {{path}}
+            </div>
+            <div>
+              {{#methods}}
+              <span class="badge badge-primary badge-pill">{{.}}</span>
+              {{/methods}}
+            </div>
           </li>
           {{/endpoints}}
         </ul>

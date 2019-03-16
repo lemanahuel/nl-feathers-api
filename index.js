@@ -58,12 +58,11 @@ const loadRoutes = async () => {
 const loadDocs = async () => {
   new Promise((resolve, reject) => {
     app.use('/docs', (req, res, next) => {
-      let routes = [];
-      _.mapValues(listEndpoints(app), (value, key) => {
-        routes.push({
+      let routes = _.map(listEndpoints(app), (value, key) => {
+        return {
           path: value.path,
           methods: value.methods
-        });
+        };
       });
       res.render('docs/docs', {
         app: {
