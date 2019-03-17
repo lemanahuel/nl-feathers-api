@@ -27,15 +27,21 @@ app.engine('html', (filePath, options, cb) => {
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static('./public'));
-app.configure(express.rest());
+app.use(express.errorHandler());
 // app.use(express.notFound({ verbose: true }));
-// app.use(express.errorHandler());
+app.use(express.static('./public'));
+app.use((req, res, next) => {
+  req.feathers = req.feathers || {};
+  req.feathers.headers = req.headers;
+  next();
+});
+
+app.configure(express.rest());
 app.configure(logger(morgan('tiny')));
 app.configure(socketio());
 app.hooks({
-  error: async context => {
-    console.error(`Error in '${context.path}' service method '${context.method}'`, context.error.stack);
+  error: ctx => {
+    console.error(`Error in '${ctx.path}' service method '${ctx.method}'`, ctx.error.stack);
   }
 });
 

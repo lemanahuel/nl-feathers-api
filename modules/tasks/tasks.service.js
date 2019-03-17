@@ -53,15 +53,15 @@ module.exports = {
 
   async uploadImages(id, data, params) {
     let images = await Cloudy.uploadImages(params.files);
-    let oldTask = await TasksModel.findById(params.route.id).select('images').lean().exec();
+    let oldTask = await TasksModel.findById(id).select('images').lean().exec();
 
-    return TasksModel.findByIdAndUpdate(params.route.id, {
+    return TasksModel.findByIdAndUpdate(id, {
       images: _.concat(oldTask.images || [], _.map(images, img => img.url))
     }).lean().exec();
   },
 
   async completed(id, data, params) {
-    return TasksModel.findByIdAndUpdate(params.route.id, {
+    return TasksModel.findByIdAndUpdate(id, {
       completed: data.completed
     }, { new: true, safe: true }).lean().exec();
   }
