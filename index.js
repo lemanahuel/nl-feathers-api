@@ -30,15 +30,16 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.errorHandler());
 // app.use(express.notFound({ verbose: true }));
 app.use(express.static('./public'));
+app.configure(express.rest());
+app.configure(logger(morgan('tiny')));
+app.configure(socketio());
+
 app.use((req, res, next) => {
   req.feathers = req.feathers || {};
   req.feathers.headers = req.headers;
   next();
 });
 
-app.configure(express.rest());
-app.configure(logger(morgan('tiny')));
-app.configure(socketio());
 app.hooks({
   error: ctx => {
     console.error(`Error in '${ctx.path}' service method '${ctx.method}'`, ctx.error.stack);
