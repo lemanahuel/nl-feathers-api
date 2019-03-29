@@ -3,7 +3,7 @@ Desarrollaremos un CRUD completo con una API RestFul con NODE + FEATHERS para pe
 
 ### Curso online en Udemy
 
-👉 https://www.udemy.com/programa-hoy-en-mongodb-con-mongoose/
+👉 https://www.udemy.com/feathers-mongodb-restful-api-crud-heroku/
 
 ### Más cursos:
 
